@@ -1,0 +1,41 @@
+{
+  "name": "@angular-devkit/schematics-cli",
+  "version": "0.0.9",
+  "description": "Angular Schematics - CLI",
+  "bin": {
+    "schematics": "./bin/schematics.js"
+  },
+  "keywords": [
+    "angular",
+    "devkit",
+    "sdk",
+    "Angular DevKit",
+    "blueprints",
+    "scaffolding",
+    "template",
+    "tooling",
+    "code generation",
+    "schematics"
+  ],
+  "dependencies": {
+    "@angular-devkit/core": "github:angular/angular-devkit-core-builds#52859db",
+    "@angular-devkit/schematics": "github:angular/angular-devkit-schematics-builds#52859db",
+    "@schematics/schematics": "0.0.17",
+    "minimist": "^1.2.0",
+    "rxjs": "^5.5.6"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/angular/devkit.git"
+  },
+  "engines": {
+    "node": ">= 6.9.0",
+    "npm": ">= 3.0.0"
+  },
+  "author": "Angular Authors",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/angular/devkit/issues"
+  },
+  "homepage": "https://github.com/angular/devkit"
+}
