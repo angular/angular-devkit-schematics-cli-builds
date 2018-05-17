@@ -22,9 +22,9 @@
     "npm": ">= 5.5.1"
   },
   "dependencies": {
-    "@angular-devkit/core": "github:angular/angular-devkit-core-builds#87b30a8",
-    "@angular-devkit/schematics": "github:angular/angular-devkit-schematics-builds#87b30a8",
-    "@schematics/schematics": "github:angular/schematics-schematics-builds#87b30a8",
+    "@angular-devkit/core": "github:angular/angular-devkit-core-builds#4785f01",
+    "@angular-devkit/schematics": "github:angular/angular-devkit-schematics-builds#4785f01",
+    "@schematics/schematics": "github:angular/schematics-schematics-builds#4785f01",
     "minimist": "^1.2.0",
     "symbol-observable": "^1.2.0",
     "rxjs": "^6.0.0"
