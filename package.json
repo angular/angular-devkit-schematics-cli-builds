@@ -23,9 +23,9 @@
     "yarn": ">=1.6.0 <2.0.0"
   },
   "dependencies": {
-    "@angular-devkit/core": "github:angular/angular-devkit-core-builds#4a5973c",
-    "@angular-devkit/schematics": "github:angular/angular-devkit-schematics-builds#4a5973c",
-    "@schematics/schematics": "github:angular/schematics-schematics-builds#4a5973c",
+    "@angular-devkit/core": "github:angular/angular-devkit-core-builds#a5bb3ce",
+    "@angular-devkit/schematics": "github:angular/angular-devkit-schematics-builds#a5bb3ce",
+    "@schematics/schematics": "github:angular/schematics-schematics-builds#a5bb3ce",
     "minimist": "1.2.0",
     "symbol-observable": "1.2.0",
     "rxjs": "6.2.2"
