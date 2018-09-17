@@ -19,9 +19,9 @@
     "schematics"
   ],
   "dependencies": {
-    "@angular-devkit/core": "github:angular/angular-devkit-core-builds#af96ccf",
-    "@angular-devkit/schematics": "github:angular/angular-devkit-schematics-builds#af96ccf",
-    "@schematics/schematics": "github:angular/schematics-schematics-builds#af96ccf",
+    "@angular-devkit/core": "github:angular/angular-devkit-core-builds#7fee770",
+    "@angular-devkit/schematics": "github:angular/angular-devkit-schematics-builds#7fee770",
+    "@schematics/schematics": "github:angular/schematics-schematics-builds#7fee770",
     "minimist": "1.2.0",
     "symbol-observable": "1.2.0",
     "rxjs": "6.2.2"
