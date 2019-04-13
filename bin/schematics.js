@@ -1,5 +1,12 @@
 #!/usr/bin/env node
 "use strict";
+/**
+ * @license
+ * Copyright Google Inc. All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
 Object.defineProperty(exports, "__esModule", { value: true });
 require("symbol-observable");
 // symbol polyfill must go first
@@ -59,9 +66,12 @@ function _createPromptProvider() {
             }
             switch (definition.type) {
                 case 'confirmation':
-                    return Object.assign({}, question, { type: 'confirm' });
+                    return { ...question, type: 'confirm' };
                 case 'list':
-                    return Object.assign({}, question, { type: !!definition.multiselect ? 'checkbox' : 'list', choices: definition.items && definition.items.map(item => {
+                    return {
+                        ...question,
+                        type: !!definition.multiselect ? 'checkbox' : 'list',
+                        choices: definition.items && definition.items.map(item => {
                             if (typeof item == 'string') {
                                 return item;
                             }
@@ -71,9 +81,10 @@ function _createPromptProvider() {
                                     value: item.value,
                                 };
                             }
-                        }) });
+                        }),
+                    };
                 default:
-                    return Object.assign({}, question, { type: definition.type });
+                    return { ...question, type: definition.type };
             }
         });
         return inquirer.prompt(questions);
