@@ -1,6 +1,6 @@
 {
   "name": "@angular-devkit/schematics-cli",
-  "version": "0.801.0-beta.2+32.bf4d972",
+  "version": "0.801.0-beta.2+39.c0eadbe",
   "description": "Angular Schematics - CLI",
   "experimental": true,
   "bin": {
@@ -20,10 +20,10 @@
     "schematics"
   ],
   "dependencies": {
-    "@angular-devkit/core": "github:angular/angular-devkit-core-builds#bf4d97254",
-    "@angular-devkit/schematics": "github:angular/angular-devkit-schematics-builds#bf4d97254",
-    "@schematics/schematics": "github:angular/schematics-schematics-builds#bf4d97254",
-    "inquirer": "6.3.1",
+    "@angular-devkit/core": "github:angular/angular-devkit-core-builds#c0eadbe2a",
+    "@angular-devkit/schematics": "github:angular/angular-devkit-schematics-builds#c0eadbe2a",
+    "@schematics/schematics": "github:angular/schematics-schematics-builds#c0eadbe2a",
+    "inquirer": "6.4.0",
     "minimist": "1.2.0",
     "rxjs": "6.4.0",
     "symbol-observable": "1.2.0"
@@ -44,6 +44,7 @@
   "homepage": "https://github.com/angular/angular-cli",
   "husky": {
     "hooks": {
+      "pre-commit": "lint-staged",
       "pre-push": "node ./bin/devkit-admin hooks/pre-push"
     }
   }
