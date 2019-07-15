@@ -1,6 +1,6 @@
 {
   "name": "@angular-devkit/schematics-cli",
-  "version": "0.802.0-next.0+15.20696fa",
+  "version": "0.802.0-next.0+17.9d4d574",
   "description": "Angular Schematics - CLI",
   "experimental": true,
   "bin": {
@@ -20,9 +20,9 @@
     "schematics"
   ],
   "dependencies": {
-    "@angular-devkit/core": "github:angular/angular-devkit-core-builds#20696fa9d",
-    "@angular-devkit/schematics": "github:angular/angular-devkit-schematics-builds#20696fa9d",
-    "@schematics/schematics": "github:angular/schematics-schematics-builds#20696fa9d",
+    "@angular-devkit/core": "github:angular/angular-devkit-core-builds#9d4d5742b",
+    "@angular-devkit/schematics": "github:angular/angular-devkit-schematics-builds#9d4d5742b",
+    "@schematics/schematics": "github:angular/schematics-schematics-builds#9d4d5742b",
     "inquirer": "6.5.0",
     "minimist": "1.2.0",
     "rxjs": "6.4.0",
