@@ -144,7 +144,7 @@ async function main({ args, stdout = process.stdout, stderr = process.stderr, })
             case 'error':
                 error = true;
                 const desc = event.description == 'alreadyExist' ? 'already exists' : 'does not exist';
-                logger.warn(`ERROR! ${event.path} ${desc}.`);
+                logger.error(`ERROR! ${event.path} ${desc}.`);
                 break;
             case 'update':
                 loggingQueue.push(core_1.tags.oneLine `
