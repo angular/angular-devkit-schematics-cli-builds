@@ -8,8 +8,8 @@
  * found in the LICENSE file at https://angular.io/license
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-require("symbol-observable");
 // symbol polyfill must go first
+require("symbol-observable");
 // tslint:disable-next-line:ordered-imports import-groups
 const core_1 = require("@angular-devkit/core");
 const node_1 = require("@angular-devkit/core/node");
@@ -116,8 +116,11 @@ async function main({ args, stdout = process.stdout, stderr = process.stderr, })
     const allowPrivate = argv['allow-private'];
     /** Create a Virtual FS Host scoped to where the process is being run. **/
     const fsHost = new core_1.virtualFs.ScopedHost(new node_1.NodeJsSyncHost(), core_1.normalize(process.cwd()));
+    const registry = new core_1.schema.CoreSchemaRegistry(schematics_1.formats.standardFormats);
     /** Create the workflow that will be executed with this run. */
-    const workflow = new tools_1.NodeWorkflow(fsHost, { force, dryRun });
+    const workflow = new tools_1.NodeWorkflow(fsHost, { force, dryRun, registry });
+    registry.addPostTransform(core_1.schema.transforms.addUndefinedDefaults);
+    workflow.engineHost.registerOptionsTransform(tools_1.validateOptionsWithSchema(registry));
     // Indicate to the user when nothing has been done. This is automatically set to off when there's
     // a new DryRunEvent.
     let nothingDone = true;
@@ -141,7 +144,7 @@ async function main({ args, stdout = process.stdout, stderr = process.stderr, })
             case 'error':
                 error = true;
                 const desc = event.description == 'alreadyExist' ? 'already exists' : 'does not exist';
-                logger.warn(`ERROR! ${event.path} ${desc}.`);
+                logger.error(`ERROR! ${event.path} ${desc}.`);
                 break;
             case 'update':
                 loggingQueue.push(core_1.tags.oneLine `
