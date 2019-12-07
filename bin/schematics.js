@@ -140,27 +140,30 @@ async function main({ args, stdout = process.stdout, stderr = process.stderr, })
      */
     workflow.reporter.subscribe((event) => {
         nothingDone = false;
+        // Strip leading slash to prevent confusion.
+        const eventPath = event.path.startsWith('/') ? event.path.substr(1) : event.path;
         switch (event.kind) {
             case 'error':
                 error = true;
                 const desc = event.description == 'alreadyExist' ? 'already exists' : 'does not exist';
-                logger.error(`ERROR! ${event.path} ${desc}.`);
+                logger.error(`ERROR! ${eventPath} ${desc}.`);
                 break;
             case 'update':
                 loggingQueue.push(core_1.tags.oneLine `
-        ${core_1.terminal.white('UPDATE')} ${event.path} (${event.content.length} bytes)
+        ${core_1.terminal.white('UPDATE')} ${eventPath} (${event.content.length} bytes)
       `);
                 break;
             case 'create':
                 loggingQueue.push(core_1.tags.oneLine `
-        ${core_1.terminal.green('CREATE')} ${event.path} (${event.content.length} bytes)
+        ${core_1.terminal.green('CREATE')} ${eventPath} (${event.content.length} bytes)
       `);
                 break;
             case 'delete':
-                loggingQueue.push(`${core_1.terminal.yellow('DELETE')} ${event.path}`);
+                loggingQueue.push(`${core_1.terminal.yellow('DELETE')} ${eventPath}`);
                 break;
             case 'rename':
-                loggingQueue.push(`${core_1.terminal.blue('RENAME')} ${event.path} => ${event.to}`);
+                const eventToPath = event.to.startsWith('/') ? event.to.substr(1) : event.to;
+                loggingQueue.push(`${core_1.terminal.blue('RENAME')} ${eventPath} => ${eventToPath}`);
                 break;
         }
     });
