@@ -118,7 +118,12 @@ async function main({ args, stdout = process.stdout, stderr = process.stderr, })
     const fsHost = new core_1.virtualFs.ScopedHost(new node_1.NodeJsSyncHost(), core_1.normalize(process.cwd()));
     const registry = new core_1.schema.CoreSchemaRegistry(schematics_1.formats.standardFormats);
     /** Create the workflow that will be executed with this run. */
-    const workflow = new tools_1.NodeWorkflow(fsHost, { force, dryRun, registry });
+    const workflow = new tools_1.NodeWorkflow(fsHost, {
+        force,
+        dryRun,
+        registry,
+        resolvePaths: [process.cwd(), __dirname],
+    });
     registry.addPostTransform(core_1.schema.transforms.addUndefinedDefaults);
     workflow.engineHost.registerOptionsTransform(tools_1.validateOptionsWithSchema(registry));
     // Indicate to the user when nothing has been done. This is automatically set to off when there's
