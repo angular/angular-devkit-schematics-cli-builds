@@ -8,6 +8,7 @@
  * found in the LICENSE file at https://angular.io/license
  */
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.main = void 0;
 // symbol polyfill must go first
 require("symbol-observable");
 // tslint:disable-next-line:ordered-imports import-groups
