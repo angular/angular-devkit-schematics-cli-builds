@@ -210,7 +210,7 @@ async function main({ args, stdout = process.stdout, stderr = process.stderr, })
             return argv._;
         }
     });
-    parsedArgs._ = [];
+    delete parsedArgs._;
     // Add prompts.
     if (argv['interactive'] && isTTY()) {
         workflow.registry.usePromptProvider(_createPromptProvider());
