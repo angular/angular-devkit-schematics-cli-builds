@@ -201,6 +201,8 @@ async function main({ args, stdout = process.stdout, stderr = process.stderr, })
     for (const key of Object.keys(argv2)) {
         parsedArgs[key] = argv2[key];
     }
+    // Show usage of deprecated options
+    workflow.registry.useXDeprecatedProvider(msg => logger.warn(msg));
     // Pass the rest of the arguments as the smart default "argv". Then delete it.
     workflow.registry.addSmartDefaultProvider('argv', (schema) => {
         if ('index' in schema) {
