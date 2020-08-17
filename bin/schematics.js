@@ -40,12 +40,10 @@ function parseSchematicName(str) {
     }
     return { collection, schematic };
 }
-function _listSchematics(collectionName, logger) {
+function _listSchematics(workflow, collectionName, logger) {
     try {
-        const engineHost = new tools_1.NodeModulesEngineHost();
-        const engine = new schematics_1.SchematicEngine(engineHost);
-        const collection = engine.createCollection(collectionName);
-        logger.info(engine.listSchematicNames(collection).join('\n'));
+        const collection = workflow.engine.createCollection(collectionName);
+        logger.info(collection.listSchematicNames().join('\n'));
     }
     catch (error) {
         logger.fatal(error.message);
@@ -102,14 +100,6 @@ async function main({ args, stdout = process.stdout, stderr = process.stderr, })
     /** Get the collection an schematic name from the first argument. */
     const { collection: collectionName, schematic: schematicName, } = parseSchematicName(argv._.shift() || null);
     const isLocalCollection = collectionName.startsWith('.') || collectionName.startsWith('/');
-    /** If the user wants to list schematics, we simply show all the schematic names. */
-    if (argv['list-schematics']) {
-        return _listSchematics(collectionName, logger);
-    }
-    if (!schematicName) {
-        logger.info(getUsage());
-        return 1;
-    }
     /** Gather the arguments for later use. */
     const debug = argv.debug === null ? isLocalCollection : argv.debug;
     const dryRun = argv['dry-run'] === null ? debug : argv['dry-run'];
@@ -125,6 +115,14 @@ async function main({ args, stdout = process.stdout, stderr = process.stderr, })
         registry,
         resolvePaths: [process.cwd(), __dirname],
     });
+    /** If the user wants to list schematics, we simply show all the schematic names. */
+    if (argv['list-schematics']) {
+        return _listSchematics(workflow, collectionName, logger);
+    }
+    if (!schematicName) {
+        logger.info(getUsage());
+        return 1;
+    }
     registry.addPostTransform(core_1.schema.transforms.addUndefinedDefaults);
     workflow.engineHost.registerOptionsTransform(tools_1.validateOptionsWithSchema(registry));
     // Indicate to the user when nothing has been done. This is automatically set to off when there's
