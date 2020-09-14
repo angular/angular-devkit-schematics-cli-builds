@@ -165,7 +165,7 @@ async function main({ args, stdout = process.stdout, stderr = process.stderr, })
                 break;
             case 'update':
                 loggingQueue.push(core_1.tags.oneLine `
-        ${colors.white('UPDATE')} ${eventPath} (${event.content.length} bytes)
+        ${colors.cyan('UPDATE')} ${eventPath} (${event.content.length} bytes)
       `);
                 break;
             case 'create':
