@@ -116,15 +116,12 @@ async function main({ args, stdout = process.stdout, stderr = process.stderr, })
     const dryRun = argv['dry-run'] === null ? debug : argv['dry-run'];
     const force = argv['force'];
     const allowPrivate = argv['allow-private'];
-    /** Create a Virtual FS Host scoped to where the process is being run. **/
-    const fsHost = new core_1.virtualFs.ScopedHost(new node_1.NodeJsSyncHost(), core_1.normalize(process.cwd()));
-    const registry = new core_1.schema.CoreSchemaRegistry(schematics_1.formats.standardFormats);
-    /** Create the workflow that will be executed with this run. */
-    const workflow = new tools_1.NodeWorkflow(fsHost, {
+    /** Create the workflow scoped to the working directory that will be executed with this run. */
+    const workflow = new tools_1.NodeWorkflow(process.cwd(), {
         force,
         dryRun,
-        registry,
         resolvePaths: [process.cwd(), __dirname],
+        schemaValidation: true,
     });
     /** If the user wants to list schematics, we simply show all the schematic names. */
     if (argv['list-schematics']) {
@@ -134,8 +131,6 @@ async function main({ args, stdout = process.stdout, stderr = process.stderr, })
         logger.info(getUsage());
         return 1;
     }
-    registry.addPostTransform(core_1.schema.transforms.addUndefinedDefaults);
-    workflow.engineHost.registerOptionsTransform(tools_1.validateOptionsWithSchema(registry));
     // Indicate to the user when nothing has been done. This is automatically set to off when there's
     // a new DryRunEvent.
     let nothingDone = true;
@@ -164,14 +159,10 @@ async function main({ args, stdout = process.stdout, stderr = process.stderr, })
                 logger.error(`ERROR! ${eventPath} ${desc}.`);
                 break;
             case 'update':
-                loggingQueue.push(core_1.tags.oneLine `
-        ${colors.cyan('UPDATE')} ${eventPath} (${event.content.length} bytes)
-      `);
+                loggingQueue.push(`${colors.cyan('UPDATE')} ${eventPath} (${event.content.length} bytes)`);
                 break;
             case 'create':
-                loggingQueue.push(core_1.tags.oneLine `
-        ${colors.green('CREATE')} ${eventPath} (${event.content.length} bytes)
-      `);
+                loggingQueue.push(`${colors.green('CREATE')} ${eventPath} (${event.content.length} bytes)`);
                 break;
             case 'delete':
                 loggingQueue.push(`${colors.yellow('DELETE')} ${eventPath}`);
