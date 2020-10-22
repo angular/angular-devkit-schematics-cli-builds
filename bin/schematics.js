@@ -16,7 +16,6 @@ const core_1 = require("@angular-devkit/core");
 const node_1 = require("@angular-devkit/core/node");
 const schematics_1 = require("@angular-devkit/schematics");
 const tools_1 = require("@angular-devkit/schematics/tools");
-const ansiColors = require("ansi-colors");
 const inquirer = require("inquirer");
 const minimist = require("minimist");
 /**
@@ -90,20 +89,10 @@ function _createPromptProvider() {
         return inquirer.prompt(questions);
     };
 }
-// tslint:disable-next-line: no-big-function
 async function main({ args, stdout = process.stdout, stderr = process.stderr, }) {
     const argv = parseArgs(args);
-    // Create a separate instance to prevent unintended global changes to the color configuration
-    // Create function is not defined in the typings. See: https://github.com/doowb/ansi-colors/pull/44
-    const colors = ansiColors.create();
     /** Create the DevKit Logger used through the CLI. */
-    const logger = node_1.createConsoleLogger(argv['verbose'], stdout, stderr, {
-        info: s => s,
-        debug: s => s,
-        warn: s => colors.bold.yellow(s),
-        error: s => colors.bold.red(s),
-        fatal: s => colors.bold.red(s),
-    });
+    const logger = node_1.createConsoleLogger(argv['verbose'], stdout, stderr);
     if (argv.help) {
         logger.info(getUsage());
         return 0;
@@ -116,12 +105,15 @@ async function main({ args, stdout = process.stdout, stderr = process.stderr, })
     const dryRun = argv['dry-run'] === null ? debug : argv['dry-run'];
     const force = argv['force'];
     const allowPrivate = argv['allow-private'];
-    /** Create the workflow scoped to the working directory that will be executed with this run. */
-    const workflow = new tools_1.NodeWorkflow(process.cwd(), {
+    /** Create a Virtual FS Host scoped to where the process is being run. **/
+    const fsHost = new core_1.virtualFs.ScopedHost(new node_1.NodeJsSyncHost(), core_1.normalize(process.cwd()));
+    const registry = new core_1.schema.CoreSchemaRegistry(schematics_1.formats.standardFormats);
+    /** Create the workflow that will be executed with this run. */
+    const workflow = new tools_1.NodeWorkflow(fsHost, {
         force,
         dryRun,
+        registry,
         resolvePaths: [process.cwd(), __dirname],
-        schemaValidation: true,
     });
     /** If the user wants to list schematics, we simply show all the schematic names. */
     if (argv['list-schematics']) {
@@ -131,6 +123,8 @@ async function main({ args, stdout = process.stdout, stderr = process.stderr, })
         logger.info(getUsage());
         return 1;
     }
+    registry.addPostTransform(core_1.schema.transforms.addUndefinedDefaults);
+    workflow.engineHost.registerOptionsTransform(tools_1.validateOptionsWithSchema(registry));
     // Indicate to the user when nothing has been done. This is automatically set to off when there's
     // a new DryRunEvent.
     let nothingDone = true;
@@ -159,17 +153,21 @@ async function main({ args, stdout = process.stdout, stderr = process.stderr, })
                 logger.error(`ERROR! ${eventPath} ${desc}.`);
                 break;
             case 'update':
-                loggingQueue.push(`${colors.cyan('UPDATE')} ${eventPath} (${event.content.length} bytes)`);
+                loggingQueue.push(core_1.tags.oneLine `
+        ${core_1.terminal.white('UPDATE')} ${eventPath} (${event.content.length} bytes)
+      `);
                 break;
             case 'create':
-                loggingQueue.push(`${colors.green('CREATE')} ${eventPath} (${event.content.length} bytes)`);
+                loggingQueue.push(core_1.tags.oneLine `
+        ${core_1.terminal.green('CREATE')} ${eventPath} (${event.content.length} bytes)
+      `);
                 break;
             case 'delete':
-                loggingQueue.push(`${colors.yellow('DELETE')} ${eventPath}`);
+                loggingQueue.push(`${core_1.terminal.yellow('DELETE')} ${eventPath}`);
                 break;
             case 'rename':
                 const eventToPath = event.to.startsWith('/') ? event.to.substr(1) : event.to;
-                loggingQueue.push(`${colors.blue('RENAME')} ${eventPath} => ${eventToPath}`);
+                loggingQueue.push(`${core_1.terminal.blue('RENAME')} ${eventPath} => ${eventToPath}`);
                 break;
         }
     });
