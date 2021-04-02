@@ -19,10 +19,10 @@
     "code generation",
     "schematics"
   ],
+  "schematics": "./collection.json",
   "dependencies": {
-    "@angular-devkit/core": "github:angular/angular-devkit-core-builds#e310a748d",
-    "@angular-devkit/schematics": "github:angular/angular-devkit-schematics-builds#e310a748d",
-    "@schematics/schematics": "github:angular/schematics-schematics-builds#e310a748d",
+    "@angular-devkit/core": "github:angular/angular-devkit-core-builds#f6759c0bb",
+    "@angular-devkit/schematics": "github:angular/angular-devkit-schematics-builds#f6759c0bb",
     "ansi-colors": "4.1.1",
     "inquirer": "8.0.0",
     "minimist": "1.2.5",
