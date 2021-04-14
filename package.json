@@ -21,8 +21,8 @@
   ],
   "schematics": "./collection.json",
   "dependencies": {
-    "@angular-devkit/core": "github:angular/angular-devkit-core-builds#bac563e5e",
-    "@angular-devkit/schematics": "github:angular/angular-devkit-schematics-builds#bac563e5e",
+    "@angular-devkit/core": "github:angular/angular-devkit-core-builds#8dbc5e7ee",
+    "@angular-devkit/schematics": "github:angular/angular-devkit-schematics-builds#8dbc5e7ee",
     "ansi-colors": "4.1.1",
     "inquirer": "8.0.0",
     "minimist": "1.2.5",
