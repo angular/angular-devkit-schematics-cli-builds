@@ -37,7 +37,10 @@ function parseSchematicName(str) {
     let collection = '@schematics/schematics';
     let schematic = str;
     if (schematic && schematic.indexOf(':') != -1) {
-        [collection, schematic] = schematic.split(':', 2);
+        [collection, schematic] = [
+            schematic.slice(0, schematic.lastIndexOf(':')),
+            schematic.substring(schematic.lastIndexOf(':') + 1),
+        ];
     }
     return { collection, schematic };
 }
