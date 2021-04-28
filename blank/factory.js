@@ -17,9 +17,9 @@ function appendPropertyInAstObject(recorder, node, propertyName, value, indent =
         const last = node.properties[node.properties.length - 1];
         recorder.insertRight(last.start.offset + last.text.replace(/\s+$/, '').length, ',');
     }
-    recorder.insertLeft(node.end.offset - 1, '  '
-        + `"${propertyName}": ${JSON.stringify(value, null, 2).replace(/\n/g, indentStr)}`
-        + indentStr.slice(0, -2));
+    recorder.insertLeft(node.end.offset - 1, '  ' +
+        `"${propertyName}": ${JSON.stringify(value, null, 2).replace(/\n/g, indentStr)}` +
+        indentStr.slice(0, -2));
 }
 function addSchematicToCollectionJson(collectionPath, schematicName, description) {
     return (tree) => {
@@ -100,8 +100,7 @@ function default_1(options) {
             schematics_1.mergeWith(source),
             addSchematicToCollectionJson(collectionPath, core_1.strings.dasherize(options.name), {
                 description: 'A blank schematic.',
-                factory: './' + core_1.strings.dasherize(options.name) + '/index#' +
-                    core_1.strings.camelize(options.name),
+                factory: './' + core_1.strings.dasherize(options.name) + '/index#' + core_1.strings.camelize(options.name),
             }),
         ]);
     };
