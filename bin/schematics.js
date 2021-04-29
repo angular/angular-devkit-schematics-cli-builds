@@ -57,7 +57,7 @@ function _listSchematics(workflow, collectionName, logger) {
 }
 function _createPromptProvider() {
     return (definitions) => {
-        const questions = definitions.map(definition => {
+        const questions = definitions.map((definition) => {
             const question = {
                 name: definition.id,
                 message: definition.message,
@@ -65,7 +65,7 @@ function _createPromptProvider() {
             };
             const validator = definition.validator;
             if (validator) {
-                question.validate = input => validator(input);
+                question.validate = (input) => validator(input);
             }
             switch (definition.type) {
                 case 'confirmation':
@@ -74,17 +74,18 @@ function _createPromptProvider() {
                     return {
                         ...question,
                         type: !!definition.multiselect ? 'checkbox' : 'list',
-                        choices: definition.items && definition.items.map(item => {
-                            if (typeof item == 'string') {
-                                return item;
-                            }
-                            else {
-                                return {
-                                    name: item.label,
-                                    value: item.value,
-                                };
-                            }
-                        }),
+                        choices: definition.items &&
+                            definition.items.map((item) => {
+                                if (typeof item == 'string') {
+                                    return item;
+                                }
+                                else {
+                                    return {
+                                        name: item.label,
+                                        value: item.value,
+                                    };
+                                }
+                            }),
                     };
                 default:
                     return { ...question, type: definition.type };
@@ -101,18 +102,18 @@ async function main({ args, stdout = process.stdout, stderr = process.stderr, })
     const colors = ansiColors.create();
     /** Create the DevKit Logger used through the CLI. */
     const logger = node_1.createConsoleLogger(argv['verbose'], stdout, stderr, {
-        info: s => s,
-        debug: s => s,
-        warn: s => colors.bold.yellow(s),
-        error: s => colors.bold.red(s),
-        fatal: s => colors.bold.red(s),
+        info: (s) => s,
+        debug: (s) => s,
+        warn: (s) => colors.bold.yellow(s),
+        error: (s) => colors.bold.red(s),
+        fatal: (s) => colors.bold.red(s),
     });
     if (argv.help) {
         logger.info(getUsage());
         return 0;
     }
     /** Get the collection an schematic name from the first argument. */
-    const { collection: collectionName, schematic: schematicName, } = parseSchematicName(argv._.shift() || null);
+    const { collection: collectionName, schematic: schematicName } = parseSchematicName(argv._.shift() || null);
     const isLocalCollection = collectionName.startsWith('.') || collectionName.startsWith('/');
     /** Gather the arguments for later use. */
     const debug = argv.debug === null ? isLocalCollection : argv.debug;
@@ -179,11 +180,11 @@ async function main({ args, stdout = process.stdout, stderr = process.stderr, })
     /**
      * Listen to lifecycle events of the workflow to flush the logs between each phases.
      */
-    workflow.lifeCycle.subscribe(event => {
+    workflow.lifeCycle.subscribe((event) => {
         if (event.kind == 'workflow-end' || event.kind == 'post-tasks-start') {
             if (!error) {
                 // Flush the log queue and clean the error state.
-                loggingQueue.forEach(log => logger.info(log));
+                loggingQueue.forEach((log) => logger.info(log));
             }
             loggingQueue = [];
             error = false;
@@ -205,7 +206,7 @@ async function main({ args, stdout = process.stdout, stderr = process.stderr, })
         parsedArgs[key] = argv2[key];
     }
     // Show usage of deprecated options
-    workflow.registry.useXDeprecatedProvider(msg => logger.warn(msg));
+    workflow.registry.useXDeprecatedProvider((msg) => logger.warn(msg));
     // Pass the rest of the arguments as the smart default "argv". Then delete it.
     workflow.registry.addSmartDefaultProvider('argv', (schema) => {
         if ('index' in schema) {
@@ -229,7 +230,8 @@ async function main({ args, stdout = process.stdout, stderr = process.stderr, })
      *  when everything is done.
      */
     try {
-        await workflow.execute({
+        await workflow
+            .execute({
             collection: collectionName,
             schematic: schematicName,
             options: parsedArgs,
@@ -259,8 +261,8 @@ async function main({ args, stdout = process.stdout, stderr = process.stderr, })
 }
 exports.main = main;
 /**
-* Get usage of the CLI tool.
-*/
+ * Get usage of the CLI tool.
+ */
 function getUsage() {
     return core_1.tags.stripIndent `
   schematics [CollectionName:]SchematicName [options, ...]
@@ -337,6 +339,8 @@ function isTTY() {
 if (require.main === module) {
     const args = process.argv.slice(2);
     main({ args })
-        .then(exitCode => process.exitCode = exitCode)
-        .catch(e => { throw (e); });
+        .then((exitCode) => (process.exitCode = exitCode))
+        .catch((e) => {
+        throw e;
+    });
 }
