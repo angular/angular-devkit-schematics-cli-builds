@@ -11,7 +11,6 @@ exports.main = void 0;
  */
 // symbol polyfill must go first
 require("symbol-observable");
-// tslint:disable-next-line:ordered-imports import-groups
 const core_1 = require("@angular-devkit/core");
 const node_1 = require("@angular-devkit/core/node");
 const schematics_1 = require("@angular-devkit/schematics");
@@ -73,7 +72,7 @@ function _createPromptProvider() {
                 case 'list':
                     return {
                         ...question,
-                        type: !!definition.multiselect ? 'checkbox' : 'list',
+                        type: definition.multiselect ? 'checkbox' : 'list',
                         choices: definition.items &&
                             definition.items.map((item) => {
                                 if (typeof item == 'string') {
@@ -94,7 +93,6 @@ function _createPromptProvider() {
         return inquirer.prompt(questions);
     };
 }
-// tslint:disable-next-line: no-big-function
 async function main({ args, stdout = process.stdout, stderr = process.stderr, }) {
     const argv = parseArgs(args);
     // Create a separate instance to prevent unintended global changes to the color configuration
