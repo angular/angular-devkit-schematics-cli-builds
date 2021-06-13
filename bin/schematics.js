@@ -7,6 +7,28 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.main = void 0;
 // symbol polyfill must go first
@@ -15,9 +37,9 @@ const core_1 = require("@angular-devkit/core");
 const node_1 = require("@angular-devkit/core/node");
 const schematics_1 = require("@angular-devkit/schematics");
 const tools_1 = require("@angular-devkit/schematics/tools");
-const ansiColors = require("ansi-colors");
-const inquirer = require("inquirer");
-const minimist = require("minimist");
+const ansiColors = __importStar(require("ansi-colors"));
+const inquirer = __importStar(require("inquirer"));
+const minimist_1 = __importDefault(require("minimist"));
 /**
  * Parse the name of schematic passed in argument, and return a {collection, schematic} named
  * tuple. The user can pass in `collection-name:schematic-name`, and this function will either
@@ -199,7 +221,7 @@ async function main({ args, stdout = process.stdout, stderr = process.stderr, })
     /**
      * Add options from `--` to args.
      */
-    const argv2 = minimist(argv['--']);
+    const argv2 = minimist_1.default(argv['--']);
     for (const key of Object.keys(argv2)) {
         parsedArgs[key] = argv2[key];
     }
@@ -307,7 +329,7 @@ const booleanArgs = [
     'interactive',
 ];
 function parseArgs(args) {
-    return minimist(args, {
+    return minimist_1.default(args, {
         boolean: booleanArgs,
         alias: {
             'dryRun': 'dry-run',
