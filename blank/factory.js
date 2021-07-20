@@ -70,7 +70,7 @@ function default_1(options) {
         }
         catch { }
         let source = schematics_1.apply(schematics_1.url('./schematic-files'), [
-            schematics_1.applyTemplates({
+            schematics_1.template({
                 ...options,
                 coreVersion,
                 schematicsVersion,
@@ -83,7 +83,7 @@ function default_1(options) {
         if (!collectionPath) {
             collectionPath = core_1.normalize('/' + options.name + '/src/collection.json');
             source = schematics_1.apply(schematics_1.url('./project-files'), [
-                schematics_1.applyTemplates({
+                schematics_1.template({
                     ...options,
                     coreVersion,
                     schematicsVersion,
