@@ -10,18 +10,39 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const core_1 = require("@angular-devkit/core");
 const schematics_1 = require("@angular-devkit/schematics");
 const tasks_1 = require("@angular-devkit/schematics/tasks");
+function appendPropertyInAstObject(recorder, node, propertyName, value, indent = 4) {
+    const indentStr = '\n' + new Array(indent + 1).join(' ');
+    if (node.properties.length > 0) {
+        // Insert comma.
+        const last = node.properties[node.properties.length - 1];
+        recorder.insertRight(last.start.offset + last.text.replace(/\s+$/, '').length, ',');
+    }
+    recorder.insertLeft(node.end.offset - 1, '  ' +
+        `"${propertyName}": ${JSON.stringify(value, null, 2).replace(/\n/g, indentStr)}` +
+        indentStr.slice(0, -2));
+}
 function addSchematicToCollectionJson(collectionPath, schematicName, description) {
     return (tree) => {
         const collectionJsonContent = tree.read(collectionPath);
         if (!collectionJsonContent) {
             throw new Error('Invalid collection path: ' + collectionPath);
         }
-        const collectionJson = JSON.parse(collectionJsonContent.toString());
-        if (!core_1.isJsonObject(collectionJson.schematics)) {
-            throw new Error('Invalid collection.json; schematics needs to be an object.');
+        const collectionJsonAst = core_1.parseJsonAst(collectionJsonContent.toString('utf-8'));
+        if (collectionJsonAst.kind !== 'object') {
+            throw new Error('Invalid collection content.');
         }
-        collectionJson['schematics'][schematicName] = description;
-        tree.overwrite(collectionPath, JSON.stringify(collectionJson, undefined, 2));
+        for (const property of collectionJsonAst.properties) {
+            if (property.key.value == 'schematics') {
+                if (property.value.kind !== 'object') {
+                    throw new Error('Invalid collection.json; schematics needs to be an object.');
+                }
+                const recorder = tree.beginUpdate(collectionPath);
+                appendPropertyInAstObject(recorder, property.value, schematicName, description);
+                tree.commitUpdate(recorder);
+                return tree;
+            }
+        }
+        throw new Error('Could not find the "schematics" property in collection.json.');
     };
 }
 function default_1(options) {
@@ -36,7 +57,9 @@ function default_1(options) {
         try {
             const packageJsonContent = tree.read('/package.json');
             if (packageJsonContent) {
-                const packageJson = JSON.parse(packageJsonContent.toString());
+                // In google3 the return value of JSON.parse() must be immediately typed,
+                // otherwise it defaults to `any`, which is prohibited.
+                const packageJson = JSON.parse(packageJsonContent.toString('utf-8'));
                 if (typeof packageJson.schematics === 'string') {
                     const p = core_1.normalize(packageJson.schematics);
                     if (tree.exists(p)) {
