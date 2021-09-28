@@ -17,7 +17,7 @@ function addSchematicToCollectionJson(collectionPath, schematicName, description
             throw new Error('Invalid collection path: ' + collectionPath);
         }
         const collectionJson = JSON.parse(collectionJsonContent.toString());
-        if (!core_1.isJsonObject(collectionJson.schematics)) {
+        if (!(0, core_1.isJsonObject)(collectionJson.schematics)) {
             throw new Error('Invalid collection.json; schematics needs to be an object.');
         }
         collectionJson['schematics'][schematicName] = description;
@@ -38,7 +38,7 @@ function default_1(options) {
             if (packageJsonContent) {
                 const packageJson = JSON.parse(packageJsonContent.toString());
                 if (typeof packageJson.schematics === 'string') {
-                    const p = core_1.normalize(packageJson.schematics);
+                    const p = (0, core_1.normalize)(packageJson.schematics);
                     if (tree.exists(p)) {
                         collectionPath = p;
                     }
@@ -46,8 +46,8 @@ function default_1(options) {
             }
         }
         catch { }
-        let source = schematics_1.apply(schematics_1.url('./schematic-files'), [
-            schematics_1.template({
+        let source = (0, schematics_1.apply)((0, schematics_1.url)('./schematic-files'), [
+            (0, schematics_1.template)({
                 ...options,
                 coreVersion,
                 schematicsVersion,
@@ -58,9 +58,9 @@ function default_1(options) {
         ]);
         // Simply create a new schematic project.
         if (!collectionPath) {
-            collectionPath = core_1.normalize('/' + options.name + '/src/collection.json');
-            source = schematics_1.apply(schematics_1.url('./project-files'), [
-                schematics_1.template({
+            collectionPath = (0, core_1.normalize)('/' + options.name + '/src/collection.json');
+            source = (0, schematics_1.apply)((0, schematics_1.url)('./project-files'), [
+                (0, schematics_1.template)({
                     ...options,
                     coreVersion,
                     schematicsVersion,
@@ -68,13 +68,13 @@ function default_1(options) {
                     camelize: core_1.strings.camelize,
                     dasherize: core_1.strings.dasherize,
                 }),
-                schematics_1.mergeWith(source),
-                schematics_1.move(options.name),
+                (0, schematics_1.mergeWith)(source),
+                (0, schematics_1.move)(options.name),
             ]);
             context.addTask(new tasks_1.NodePackageInstallTask(options.name));
         }
-        return schematics_1.chain([
-            schematics_1.mergeWith(source),
+        return (0, schematics_1.chain)([
+            (0, schematics_1.mergeWith)(source),
             addSchematicToCollectionJson(collectionPath, core_1.strings.dasherize(options.name), {
                 description: 'A blank schematic.',
                 factory: './' + core_1.strings.dasherize(options.name) + '/index#' + core_1.strings.camelize(options.name),

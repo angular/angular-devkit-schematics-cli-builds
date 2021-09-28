@@ -122,7 +122,7 @@ async function main({ args, stdout = process.stdout, stderr = process.stderr, })
     // Create function is not defined in the typings. See: https://github.com/doowb/ansi-colors/pull/44
     const colors = ansiColors.create();
     /** Create the DevKit Logger used through the CLI. */
-    const logger = node_1.createConsoleLogger(argv['verbose'], stdout, stderr, {
+    const logger = (0, node_1.createConsoleLogger)(argv['verbose'], stdout, stderr, {
         info: (s) => s,
         debug: (s) => s,
         warn: (s) => colors.bold.yellow(s),
@@ -227,7 +227,7 @@ async function main({ args, stdout = process.stdout, stderr = process.stderr, })
     /**
      * Add options from `--` to args.
      */
-    const argv2 = minimist_1.default(argv['--']);
+    const argv2 = (0, minimist_1.default)(argv['--']);
     for (const key of Object.keys(argv2)) {
         parsedArgs[key] = argv2[key];
     }
@@ -338,7 +338,7 @@ const booleanArgs = [
     'interactive',
 ];
 function parseArgs(args) {
-    return minimist_1.default(args, {
+    return (0, minimist_1.default)(args, {
         boolean: booleanArgs,
         alias: {
             'dryRun': 'dry-run',
