@@ -15,15 +15,15 @@ function default_1(options) {
     const coreVersion = require('@angular-devkit/core/package.json').version;
     return (_, context) => {
         context.addTask(new tasks_1.NodePackageInstallTask(options.name));
-        return schematics_1.mergeWith(schematics_1.apply(schematics_1.url('./files'), [
-            schematics_1.partitionApplyMerge((p) => !/\/src\/.*?\/files\//.test(p), schematics_1.template({
+        return (0, schematics_1.mergeWith)((0, schematics_1.apply)((0, schematics_1.url)('./files'), [
+            (0, schematics_1.partitionApplyMerge)((p) => !/\/src\/.*?\/files\//.test(p), (0, schematics_1.template)({
                 ...options,
                 coreVersion,
                 schematicsVersion,
                 dot: '.',
                 dasherize: core_1.strings.dasherize,
             })),
-            schematics_1.move(options.name),
+            (0, schematics_1.move)(options.name),
         ]));
     };
 }
