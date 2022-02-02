@@ -1,28 +1,28 @@
 {
   "name": "@angular-devkit/schematics-cli",
-  "version": "13.2.1",
+  "version": "13.2.1+10.sha-491e210",
   "description": "Angular Schematics - CLI",
   "homepage": "https://github.com/angular/angular-cli",
   "bin": {
     "schematics": "./bin/schematics.js"
   },
   "keywords": [
-    "angular",
     "Angular CLI",
-    "devkit",
-    "sdk",
     "Angular DevKit",
+    "angular",
     "blueprints",
-    "scaffolding",
-    "template",
-    "tooling",
     "code generation",
-    "schematics"
+    "devkit",
+    "scaffolding",
+    "schematics",
+    "sdk",
+    "template",
+    "tooling"
   ],
   "schematics": "./collection.json",
   "dependencies": {
-    "@angular-devkit/core": "github:angular/angular-devkit-core-builds#ff54b49e7",
-    "@angular-devkit/schematics": "github:angular/angular-devkit-schematics-builds#ff54b49e7",
+    "@angular-devkit/core": "github:angular/angular-devkit-core-builds#491e2103b",
+    "@angular-devkit/schematics": "github:angular/angular-devkit-schematics-builds#491e2103b",
     "ansi-colors": "4.1.1",
     "inquirer": "8.2.0",
     "minimist": "1.2.5",
