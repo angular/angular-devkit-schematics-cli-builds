@@ -31,7 +31,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.main = void 0;
+exports.loadEsmModule = exports.main = void 0;
 // symbol polyfill must go first
 require("symbol-observable");
 const core_1 = require("@angular-devkit/core");
@@ -40,7 +40,6 @@ const schematics_1 = require("@angular-devkit/schematics");
 const tools_1 = require("@angular-devkit/schematics/tools");
 const ansiColors = __importStar(require("ansi-colors"));
 const fs_1 = require("fs");
-const inquirer = __importStar(require("inquirer"));
 const path = __importStar(require("path"));
 const yargs_parser_1 = __importStar(require("yargs-parser"));
 /**
@@ -81,7 +80,7 @@ function _listSchematics(workflow, collectionName, logger) {
     return 0;
 }
 function _createPromptProvider() {
-    return (definitions) => {
+    return async (definitions) => {
         const questions = definitions.map((definition) => {
             const question = {
                 name: definition.id,
@@ -140,6 +139,7 @@ function _createPromptProvider() {
                     return { ...question, type: definition.type };
             }
         });
+        const { default: inquirer } = await loadEsmModule('inquirer');
         return inquirer.prompt(questions);
     };
 }
@@ -429,3 +429,19 @@ if (require.main === module) {
         throw e;
     });
 }
+/**
+ * This uses a dynamic import to load a module which may be ESM.
+ * CommonJS code can load ESM code via a dynamic import. Unfortunately, TypeScript
+ * will currently, unconditionally downlevel dynamic import into a require call.
+ * require calls cannot load ESM code and will result in a runtime error. To workaround
+ * this, a Function constructor is used to prevent TypeScript from changing the dynamic import.
+ * Once TypeScript provides support for keeping the dynamic import this workaround can
+ * be dropped.
+ *
+ * @param modulePath The path of the module to load.
+ * @returns A Promise that resolves to the dynamically imported module.
+ */
+function loadEsmModule(modulePath) {
+    return new Function('modulePath', `return import(modulePath);`)(modulePath);
+}
+exports.loadEsmModule = loadEsmModule;
