@@ -30,17 +30,19 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.loadEsmModule = exports.main = void 0;
 // symbol polyfill must go first
 require("symbol-observable");
-const core_1 = require("@angular-devkit/core");
 const node_1 = require("@angular-devkit/core/node");
 const schematics_1 = require("@angular-devkit/schematics");
 const tools_1 = require("@angular-devkit/schematics/tools");
-const ansiColors = __importStar(require("ansi-colors"));
-const fs_1 = require("fs");
-const path = __importStar(require("path"));
+const ansi_colors_1 = __importDefault(require("ansi-colors"));
+const node_fs_1 = require("node:fs");
+const path = __importStar(require("node:path"));
 const yargs_parser_1 = __importStar(require("yargs-parser"));
 /**
  * Parse the name of schematic passed in argument, and return a {collection, schematic} named
@@ -152,7 +154,7 @@ function findUp(names, from) {
     while (currentDir && currentDir !== root) {
         for (const name of names) {
             const p = path.join(currentDir, name);
-            if ((0, fs_1.existsSync)(p)) {
+            if ((0, node_fs_1.existsSync)(p)) {
                 return p;
             }
         }
@@ -180,7 +182,7 @@ function getPackageManagerName() {
 async function main({ args, stdout = process.stdout, stderr = process.stderr, }) {
     const { cliOptions, schematicOptions, _ } = parseArgs(args);
     // Create a separate instance to prevent unintended global changes to the color configuration
-    const colors = ansiColors.create();
+    const colors = ansi_colors_1.default.create();
     /** Create the DevKit Logger used through the CLI. */
     const logger = (0, node_1.createConsoleLogger)(!!cliOptions.verbose, stdout, stderr, {
         info: (s) => s,
@@ -331,35 +333,35 @@ exports.main = main;
  * Get usage of the CLI tool.
  */
 function getUsage() {
-    return core_1.tags.stripIndent `
-  schematics [collection-name:]schematic-name [options, ...]
+    return `
+schematics [collection-name:]schematic-name [options, ...]
 
-  By default, if the collection name is not specified, use the internal collection provided
-  by the Schematics CLI.
+By default, if the collection name is not specified, use the internal collection provided
+by the Schematics CLI.
 
-  Options:
-      --debug             Debug mode. This is true by default if the collection is a relative
-                          path (in that case, turn off with --debug=false).
+Options:
+    --debug             Debug mode. This is true by default if the collection is a relative
+                        path (in that case, turn off with --debug=false).
 
-      --allow-private     Allow private schematics to be run from the command line. Default to
-                          false.
+    --allow-private     Allow private schematics to be run from the command line. Default to
+                        false.
 
-      --dry-run           Do not output anything, but instead just show what actions would be
-                          performed. Default to true if debug is also true.
+    --dry-run           Do not output anything, but instead just show what actions would be
+                        performed. Default to true if debug is also true.
 
-      --force             Force overwriting files that would otherwise be an error.
+    --force             Force overwriting files that would otherwise be an error.
 
-      --list-schematics   List all schematics from the collection, by name. A collection name
-                          should be suffixed by a colon. Example: '@angular-devkit/schematics-cli:'.
+    --list-schematics   List all schematics from the collection, by name. A collection name
+                        should be suffixed by a colon. Example: '@angular-devkit/schematics-cli:'.
 
-      --no-interactive    Disables interactive input prompts.
+    --no-interactive    Disables interactive input prompts.
 
-      --verbose           Show more information.
+    --verbose           Show more information.
 
-      --help              Show this message.
+    --help              Show this message.
 
-  Any additional option is passed to the Schematics depending on its schema.
-  `;
+Any additional option is passed to the Schematics depending on its schema.
+`;
 }
 /** Parse the command line. */
 const booleanArgs = [
