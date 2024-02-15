@@ -40,7 +40,7 @@ function default_1(options) {
         }
         catch { }
         let source = (0, schematics_1.apply)((0, schematics_1.url)('./schematic-files'), [
-            (0, schematics_1.template)({
+            (0, schematics_1.applyTemplates)({
                 ...options,
                 coreVersion,
                 schematicsVersion,
@@ -53,7 +53,8 @@ function default_1(options) {
         if (!collectionPath) {
             collectionPath = (0, core_1.normalize)('/' + options.name + '/src/collection.json');
             source = (0, schematics_1.apply)((0, schematics_1.url)('./project-files'), [
-                (0, schematics_1.template)({
+                (0, schematics_1.move)('package.json', 'package.json.template'),
+                (0, schematics_1.applyTemplates)({
                     ...options,
                     coreVersion,
                     schematicsVersion,

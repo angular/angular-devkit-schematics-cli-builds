@@ -16,7 +16,9 @@ function default_1(options) {
     return (_, context) => {
         context.addTask(new tasks_1.NodePackageInstallTask(options.name));
         return (0, schematics_1.mergeWith)((0, schematics_1.apply)((0, schematics_1.url)('./files'), [
-            (0, schematics_1.partitionApplyMerge)((p) => !/\/src\/.*?\/files\//.test(p), (0, schematics_1.template)({
+            // The `package.json` name is kept to allow renovate to update the dependency versions
+            (0, schematics_1.move)('package.json', 'package.json.template'),
+            (0, schematics_1.partitionApplyMerge)((p) => !/\/src\/.*?\/files\//.test(p), (0, schematics_1.applyTemplates)({
                 ...options,
                 coreVersion,
                 schematicsVersion,
