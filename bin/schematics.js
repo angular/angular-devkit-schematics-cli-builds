@@ -34,7 +34,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.loadEsmModule = exports.main = void 0;
+exports.main = main;
+exports.loadEsmModule = loadEsmModule;
 // symbol polyfill must go first
 require("symbol-observable");
 const node_1 = require("@angular-devkit/core/node");
@@ -328,7 +329,6 @@ async function main({ args, stdout = process.stdout, stderr = process.stderr, })
         return 1;
     }
 }
-exports.main = main;
 /**
  * Get usage of the CLI tool.
  */
@@ -451,4 +451,3 @@ function loadEsmModule(modulePath) {
     load ??= new Function('modulePath', `return import(modulePath);`);
     return load(modulePath);
 }
-exports.loadEsmModule = loadEsmModule;
