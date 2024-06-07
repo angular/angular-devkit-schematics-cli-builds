@@ -35,7 +35,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.main = main;
-exports.loadEsmModule = loadEsmModule;
 // symbol polyfill must go first
 require("symbol-observable");
 const node_1 = require("@angular-devkit/core/node");
@@ -84,66 +83,82 @@ function _listSchematics(workflow, collectionName, logger) {
 }
 function _createPromptProvider() {
     return async (definitions) => {
-        const questions = definitions.map((definition) => {
-            const question = {
-                name: definition.id,
-                message: definition.message,
-                default: definition.default,
-            };
-            const validator = definition.validator;
-            if (validator) {
-                question.validate = (input) => validator(input);
-                // Filter allows transformation of the value prior to validation
-                question.filter = async (input) => {
-                    for (const type of definition.propertyTypes) {
-                        let value;
-                        switch (type) {
-                            case 'string':
-                                value = String(input);
-                                break;
-                            case 'integer':
-                            case 'number':
-                                value = Number(input);
-                                break;
-                            default:
-                                value = input;
-                                break;
-                        }
-                        // Can be a string if validation fails
-                        const isValid = (await validator(value)) === true;
-                        if (isValid) {
-                            return value;
-                        }
-                    }
-                    return input;
-                };
-            }
+        let prompts;
+        const answers = {};
+        for (const definition of definitions) {
+            // Only load prompt package if needed
+            prompts ??= await Promise.resolve().then(() => __importStar(require('@inquirer/prompts')));
             switch (definition.type) {
                 case 'confirmation':
-                    return { ...question, type: 'confirm' };
+                    answers[definition.id] = await prompts.confirm({
+                        message: definition.message,
+                        default: definition.default,
+                    });
+                    break;
                 case 'list':
-                    return {
-                        ...question,
-                        type: definition.multiselect ? 'checkbox' : 'list',
-                        choices: definition.items &&
-                            definition.items.map((item) => {
-                                if (typeof item == 'string') {
-                                    return item;
+                    if (!definition.items?.length) {
+                        continue;
+                    }
+                    const choices = definition.items?.map((item) => {
+                        return typeof item == 'string'
+                            ? {
+                                name: item,
+                                value: item,
+                            }
+                            : {
+                                name: item.label,
+                                value: item.value,
+                            };
+                    });
+                    answers[definition.id] = await (definition.multiselect ? prompts.checkbox : prompts.select)({
+                        message: definition.message,
+                        default: definition.default,
+                        choices,
+                    });
+                    break;
+                case 'input':
+                    let finalValue;
+                    answers[definition.id] = await prompts.input({
+                        message: definition.message,
+                        default: definition.default,
+                        async validate(value) {
+                            if (definition.validator === undefined) {
+                                return true;
+                            }
+                            let lastValidation = false;
+                            for (const type of definition.propertyTypes) {
+                                let potential;
+                                switch (type) {
+                                    case 'string':
+                                        potential = String(value);
+                                        break;
+                                    case 'integer':
+                                    case 'number':
+                                        potential = Number(value);
+                                        break;
+                                    default:
+                                        potential = value;
+                                        break;
                                 }
-                                else {
-                                    return {
-                                        name: item.label,
-                                        value: item.value,
-                                    };
+                                lastValidation = await definition.validator(potential);
+                                // Can be a string if validation fails
+                                if (lastValidation === true) {
+                                    finalValue = potential;
+                                    return true;
                                 }
-                            }),
-                    };
-                default:
-                    return { ...question, type: definition.type };
+                            }
+                            return lastValidation;
+                        },
+                    });
+                    // Use validated value if present.
+                    // This ensures the correct type is inserted into the final schema options.
+                    if (finalValue !== undefined) {
+                        answers[definition.id] = finalValue;
+                    }
+                    break;
             }
-        });
-        const { default: inquirer } = await loadEsmModule('inquirer');
-        return inquirer.prompt(questions);
+        }
+        return answers;
     };
 }
 function findUp(names, from) {
@@ -430,24 +445,4 @@ if (require.main === module) {
         .catch((e) => {
         throw e;
     });
-}
-/**
- * Lazily compiled dynamic import loader function.
- */
-let load;
-/**
- * This uses a dynamic import to load a module which may be ESM.
- * CommonJS code can load ESM code via a dynamic import. Unfortunately, TypeScript
- * will currently, unconditionally downlevel dynamic import into a require call.
- * require calls cannot load ESM code and will result in a runtime error. To workaround
- * this, a Function constructor is used to prevent TypeScript from changing the dynamic import.
- * Once TypeScript provides support for keeping the dynamic import this workaround can
- * be dropped.
- *
- * @param modulePath The path of the module to load.
- * @returns A Promise that resolves to the dynamically imported module.
- */
-function loadEsmModule(modulePath) {
-    load ??= new Function('modulePath', `return import(modulePath);`);
-    return load(modulePath);
 }
