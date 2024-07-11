@@ -70,6 +70,9 @@ function parseSchematicName(str) {
     }
     return { collection, schematic };
 }
+function removeLeadingSlash(value) {
+    return value[0] === '/' ? value.slice(1) : value;
+}
 function _listSchematics(workflow, collectionName, logger) {
     try {
         const collection = workflow.engine.createCollection(collectionName);
@@ -99,8 +102,10 @@ function _createPromptProvider() {
                     if (!definition.items?.length) {
                         continue;
                     }
-                    const choices = definition.items?.map((item) => {
-                        return typeof item == 'string'
+                    answers[definition.id] = await (definition.multiselect ? prompts.checkbox : prompts.select)({
+                        message: definition.message,
+                        default: definition.default,
+                        choices: definition.items.map((item) => typeof item == 'string'
                             ? {
                                 name: item,
                                 value: item,
@@ -108,15 +113,10 @@ function _createPromptProvider() {
                             : {
                                 name: item.label,
                                 value: item.value,
-                            };
-                    });
-                    answers[definition.id] = await (definition.multiselect ? prompts.checkbox : prompts.select)({
-                        message: definition.message,
-                        default: definition.default,
-                        choices,
+                            }),
                     });
                     break;
-                case 'input':
+                case 'input': {
                     let finalValue;
                     answers[definition.id] = await prompts.input({
                         message: definition.message,
@@ -156,6 +156,7 @@ function _createPromptProvider() {
                         answers[definition.id] = finalValue;
                     }
                     break;
+                }
             }
         }
         return answers;
@@ -260,12 +261,11 @@ async function main({ args, stdout = process.stdout, stderr = process.stderr, })
     workflow.reporter.subscribe((event) => {
         nothingDone = false;
         // Strip leading slash to prevent confusion.
-        const eventPath = event.path.startsWith('/') ? event.path.slice(1) : event.path;
+        const eventPath = removeLeadingSlash(event.path);
         switch (event.kind) {
             case 'error':
                 error = true;
-                const desc = event.description == 'alreadyExist' ? 'already exists' : 'does not exist';
-                logger.error(`ERROR! ${eventPath} ${desc}.`);
+                logger.error(`ERROR! ${eventPath} ${event.description == 'alreadyExist' ? 'already exists' : 'does not exist'}.`);
                 break;
             case 'update':
                 loggingQueue.push(`${colors.cyan('UPDATE')} ${eventPath} (${event.content.length} bytes)`);
@@ -277,8 +277,7 @@ async function main({ args, stdout = process.stdout, stderr = process.stderr, })
                 loggingQueue.push(`${colors.yellow('DELETE')} ${eventPath}`);
                 break;
             case 'rename':
-                const eventToPath = event.to.startsWith('/') ? event.to.slice(1) : event.to;
-                loggingQueue.push(`${colors.blue('RENAME')} ${eventPath} => ${eventToPath}`);
+                loggingQueue.push(`${colors.blue('RENAME')} ${eventPath} => ${removeLeadingSlash(event.to)}`);
                 break;
         }
     });
