@@ -37,6 +37,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.main = main;
 // symbol polyfill must go first
 require("symbol-observable");
+const core_1 = require("@angular-devkit/core");
 const node_1 = require("@angular-devkit/core/node");
 const schematics_1 = require("@angular-devkit/schematics");
 const tools_1 = require("@angular-devkit/schematics/tools");
@@ -300,6 +301,7 @@ async function main({ args, stdout = process.stdout, stderr = process.stderr, })
             error = false;
         }
     });
+    workflow.registry.addPostTransform(core_1.schema.transforms.addUndefinedDefaults);
     // Show usage of deprecated options
     workflow.registry.useXDeprecatedProvider((msg) => logger.warn(msg));
     // Pass the rest of the arguments as the smart default "argv". Then delete it.

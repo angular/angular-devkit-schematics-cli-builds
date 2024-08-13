@@ -15,7 +15,10 @@ function default_1(options) {
     const schematicsVersion = require('@angular-devkit/schematics/package.json').version;
     const coreVersion = require('@angular-devkit/core/package.json').version;
     return (_, context) => {
-        context.addTask(new tasks_1.NodePackageInstallTask(options.name));
+        context.addTask(new tasks_1.NodePackageInstallTask({
+            workingDirectory: options.name,
+            packageManager: options.packageManager,
+        }));
         return (0, schematics_1.mergeWith)((0, schematics_1.apply)((0, schematics_1.url)('./files'), [
             // The `package.json` name is kept to allow renovate to update the dependency versions
             (0, schematics_1.move)('package.json', 'package.json.template'),

@@ -66,7 +66,10 @@ function default_1(options) {
                 (0, schematics_1.mergeWith)(source),
                 (0, schematics_1.move)(options.name),
             ]);
-            context.addTask(new tasks_1.NodePackageInstallTask(options.name));
+            context.addTask(new tasks_1.NodePackageInstallTask({
+                workingDirectory: options.name,
+                packageManager: options.packageManager,
+            }));
         }
         return (0, schematics_1.chain)([
             (0, schematics_1.mergeWith)(source),
