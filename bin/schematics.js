@@ -105,6 +105,12 @@ function _createPromptProvider() {
                     answers[definition.id] = await (definition.multiselect ? prompts.checkbox : prompts.select)({
                         message: definition.message,
                         default: definition.default,
+                        validate: (values) => {
+                            if (!definition.validator) {
+                                return true;
+                            }
+                            return definition.validator(Object.values(values).map(({ value }) => value));
+                        },
                         choices: definition.items.map((item) => typeof item == 'string'
                             ? {
                                 name: item,
