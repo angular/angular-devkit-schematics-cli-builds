@@ -1,4 +1,4 @@
-export interface Schema {
+export type Schema = {
     /**
      * Author for the new schematic.
      */
@@ -12,7 +12,7 @@ export interface Schema {
      */
     packageManager?: PackageManager;
     [property: string]: any;
-}
+};
 /**
  * The package manager used to install dependencies.
  */
