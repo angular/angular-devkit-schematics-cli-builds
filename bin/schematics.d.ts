@@ -6,7 +6,6 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.dev/license
  */
-import 'symbol-observable';
 import { ProcessOutput } from '@angular-devkit/core/node';
 export interface MainOptions {
     args: string[];
