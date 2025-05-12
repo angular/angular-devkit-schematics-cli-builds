@@ -1,6 +1,6 @@
 {
   "name": "@angular-devkit/schematics-cli",
-  "version": "20.0.0-rc.0+sha-0f8594f",
+  "version": "20.0.0-rc.0+sha-a01dc23",
   "description": "Angular Schematics - CLI",
   "homepage": "https://github.com/angular/angular-cli",
   "bin": {
@@ -23,7 +23,7 @@
   "dependencies": {
     "@angular-devkit/core": "github:angular/angular-devkit-core-builds#{BUILD_SCM_ABBREV_HASH}",
     "@angular-devkit/schematics": "github:angular/angular-devkit-schematics-builds#{BUILD_SCM_ABBREV_HASH}",
-    "@inquirer/prompts": "7.5.0",
+    "@inquirer/prompts": "7.5.1",
     "ansi-colors": "4.1.3",
     "yargs-parser": "21.1.1"
   },
