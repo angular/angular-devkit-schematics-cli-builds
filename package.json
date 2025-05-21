@@ -1,6 +1,6 @@
 {
   "name": "@angular-devkit/schematics-cli",
-  "version": "20.0.0-rc.3+sha-4f515ad",
+  "version": "20.0.0-rc.3+sha-be8cfba",
   "description": "Angular Schematics - CLI",
   "homepage": "https://github.com/angular/angular-cli",
   "bin": {
