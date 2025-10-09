@@ -80,3 +80,4 @@ function default_1(options) {
         ]);
     };
 }
+//# sourceMappingURL=factory.js.map
