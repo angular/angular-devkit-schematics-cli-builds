@@ -218,7 +218,6 @@ function getPackageManagerName() {
     }
     return 'npm';
 }
-// eslint-disable-next-line max-lines-per-function
 async function main({ args, stdout = process.stdout, stderr = process.stderr, }) {
     const { cliOptions, schematicOptions, _ } = parseArgs(args);
     // Create a separate instance to prevent unintended global changes to the color configuration
