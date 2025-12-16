@@ -40,16 +40,12 @@ var __importStar = (this && this.__importStar) || (function () {
         return result;
     };
 })();
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.main = main;
 const core_1 = require("@angular-devkit/core");
 const node_1 = require("@angular-devkit/core/node");
 const schematics_1 = require("@angular-devkit/schematics");
 const tools_1 = require("@angular-devkit/schematics/tools");
-const ansi_colors_1 = __importDefault(require("ansi-colors"));
 const node_fs_1 = require("node:fs");
 const path = __importStar(require("node:path"));
 const node_util_1 = require("node:util");
@@ -220,15 +216,13 @@ function getPackageManagerName() {
 }
 async function main({ args, stdout = process.stdout, stderr = process.stderr, }) {
     const { cliOptions, schematicOptions, _ } = parseOptions(args);
-    // Create a separate instance to prevent unintended global changes to the color configuration
-    const colors = ansi_colors_1.default.create();
     /** Create the DevKit Logger used through the CLI. */
     const logger = (0, node_1.createConsoleLogger)(!!cliOptions.verbose, stdout, stderr, {
         info: (s) => s,
         debug: (s) => s,
-        warn: (s) => colors.bold.yellow(s),
-        error: (s) => colors.bold.red(s),
-        fatal: (s) => colors.bold.red(s),
+        warn: (s) => (0, node_util_1.styleText)(['bold', 'yellow'], s),
+        error: (s) => (0, node_util_1.styleText)(['bold', 'red'], s),
+        fatal: (s) => (0, node_util_1.styleText)(['bold', 'red'], s),
     });
     if (cliOptions.help) {
         logger.info(getUsage());
@@ -291,18 +285,18 @@ async function main({ args, stdout = process.stdout, stderr = process.stderr, })
             case 'update':
                 loggingQueue.push(
                 // TODO: `as unknown` was necessary during TS 5.9 update. Figure out a long-term solution.
-                `${colors.cyan('UPDATE')} ${eventPath} (${event.content.length} bytes)`);
+                `${(0, node_util_1.styleText)(['cyan'], 'UPDATE')} ${eventPath} (${event.content.length} bytes)`);
                 break;
             case 'create':
                 loggingQueue.push(
                 // TODO: `as unknown` was necessary during TS 5.9 update. Figure out a long-term solution.
-                `${colors.green('CREATE')} ${eventPath} (${event.content.length} bytes)`);
+                `${(0, node_util_1.styleText)(['green'], 'CREATE')} ${eventPath} (${event.content.length} bytes)`);
                 break;
             case 'delete':
-                loggingQueue.push(`${colors.yellow('DELETE')} ${eventPath}`);
+                loggingQueue.push(`${(0, node_util_1.styleText)(['yellow'], 'DELETE')} ${eventPath}`);
                 break;
             case 'rename':
-                loggingQueue.push(`${colors.blue('RENAME')} ${eventPath} => ${removeLeadingSlash(event.to)}`);
+                loggingQueue.push(`${(0, node_util_1.styleText)(['blue'], 'RENAME')} ${eventPath} => ${removeLeadingSlash(event.to)}`);
                 break;
         }
     });
