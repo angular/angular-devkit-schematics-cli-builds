@@ -1,6 +1,6 @@
 {
   "name": "@angular-devkit/schematics-cli",
-  "version": "21.1.0+sha-be73218",
+  "version": "21.1.0+sha-ad75b55",
   "description": "Angular Schematics - CLI",
   "homepage": "https://github.com/angular/angular-cli",
   "bin": {
@@ -21,8 +21,8 @@
   ],
   "schematics": "./collection.json",
   "dependencies": {
-    "@angular-devkit/core": "github:angular/angular-devkit-core-builds#be73218",
-    "@angular-devkit/schematics": "github:angular/angular-devkit-schematics-builds#be73218",
+    "@angular-devkit/core": "github:angular/angular-devkit-core-builds#ad75b55",
+    "@angular-devkit/schematics": "github:angular/angular-devkit-schematics-builds#ad75b55",
     "@inquirer/prompts": "7.10.1"
   },
   "repository": {
