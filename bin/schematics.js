@@ -43,7 +43,6 @@ var __importStar = (this && this.__importStar) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.main = main;
 const core_1 = require("@angular-devkit/core");
-const node_1 = require("@angular-devkit/core/node");
 const schematics_1 = require("@angular-devkit/schematics");
 const tools_1 = require("@angular-devkit/schematics/tools");
 const node_fs_1 = require("node:fs");
@@ -215,16 +214,31 @@ function getPackageManagerName() {
     }
     return 'npm';
 }
-async function main({ args, stdout = process.stdout, stderr = process.stderr, }) {
-    const { cliOptions, schematicOptions, _ } = parseOptions(args);
-    /** Create the DevKit Logger used through the CLI. */
-    const logger = (0, node_1.createConsoleLogger)(!!cliOptions.verbose, stdout, stderr, {
+function createLogger(verbose, stdout, stderr) {
+    const logger = new core_1.logging.IndentLogger('schematics');
+    const colorLevels = {
         info: (s) => s,
         debug: (s) => s,
-        warn: (s) => (0, node_util_1.styleText)(['bold', 'yellow'], s),
-        error: (s) => (0, node_util_1.styleText)(['bold', 'red'], s),
-        fatal: (s) => (0, node_util_1.styleText)(['bold', 'red'], s),
+        warn: (s, stream) => (0, node_util_1.styleText)(['bold', 'yellow'], s, { stream }),
+        error: (s, stream) => (0, node_util_1.styleText)(['bold', 'red'], s, { stream }),
+        fatal: (s, stream) => (0, node_util_1.styleText)(['bold', 'red'], s, { stream }),
+    };
+    logger.subscribe((entry) => {
+        if (entry.level === 'debug' && !verbose) {
+            return;
+        }
+        const output = entry.level === 'warn' || entry.level === 'fatal' || entry.level === 'error'
+            ? stderr
+            : stdout;
+        const color = colorLevels[entry.level];
+        const message = color ? color(entry.message, output) : entry.message;
+        output.write(message + '\n');
     });
+    return logger;
+}
+async function main({ args, stdout = process.stdout, stderr = process.stderr, }) {
+    const { cliOptions, schematicOptions, _ } = parseOptions(args);
+    const logger = createLogger(!!cliOptions.verbose, stdout, stderr);
     if (cliOptions.help) {
         logger.info(getUsage());
         return 0;
