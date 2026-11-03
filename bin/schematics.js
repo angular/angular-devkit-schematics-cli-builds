@@ -298,14 +298,10 @@ async function main({ args, stdout = process.stdout, stderr = process.stderr, })
                 logger.error(`ERROR! ${eventPath} ${event.description == 'alreadyExist' ? 'already exists' : 'does not exist'}.`);
                 break;
             case 'update':
-                loggingQueue.push(
-                // TODO: `as unknown` was necessary during TS 5.9 update. Figure out a long-term solution.
-                `${(0, node_util_1.styleText)(['cyan'], 'UPDATE')} ${eventPath} (${event.content.length} bytes)`);
+                loggingQueue.push(`${(0, node_util_1.styleText)(['cyan'], 'UPDATE')} ${eventPath} (${event.content.byteLength} bytes)`);
                 break;
             case 'create':
-                loggingQueue.push(
-                // TODO: `as unknown` was necessary during TS 5.9 update. Figure out a long-term solution.
-                `${(0, node_util_1.styleText)(['green'], 'CREATE')} ${eventPath} (${event.content.length} bytes)`);
+                loggingQueue.push(`${(0, node_util_1.styleText)(['green'], 'CREATE')} ${eventPath} (${event.content.byteLength} bytes)`);
                 break;
             case 'delete':
                 loggingQueue.push(`${(0, node_util_1.styleText)(['yellow'], 'DELETE')} ${eventPath}`);
